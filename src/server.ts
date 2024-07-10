@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 
 const port = process.env.PORT || 8000;
 
@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.get("/api/status", (req, res) => {
+app.get("/api/status", (req: Request, res: Response) => {
   res.json({ message: "Server is running fine!" });
 });
 

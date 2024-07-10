@@ -6,10 +6,17 @@
   "author": "deepanshu tiwari",
   "license": "MIT",
   "scripts": {
-   "start": "node server.js",
-    "dev": "node --watch --env-file=.env server"
+    "start": "node server.js",
+    "dev": "nodemon"
   },
   "dependencies": {
     "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.10",
+    "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3"
   }
 }
