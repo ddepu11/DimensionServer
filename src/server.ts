@@ -1,7 +1,5 @@
 import express, { Request, Response } from "express";
-import { handlePull } from "./pull";
-import { handlePush } from "./push";
-
+import todos from "../routes/todos";
 const port = process.env.PORT || 9000;
 
 const app = express();
@@ -10,8 +8,7 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.post("/api/replicache/pull", handlePull);
-app.post("/api/replicache/push", handlePush);
+app.use("/api/replicache/", todos);
 
 app.get("/api/status", (_: Request, res: Response) => {
   res.status(200).json({ message: "Server is running fine! Sab Changa si :)" });
