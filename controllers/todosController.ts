@@ -65,7 +65,7 @@ async function pull(req: Request, res: Response) {
       // Build and return response.
       const patch: PatchOperation[] = [];
       for (const row of changed) {
-        const { id, content, ord, version: rowVersion, completed } = row;
+        const { id, content, ord, completed } = row;
 
         patch.push({
           op: "put",
