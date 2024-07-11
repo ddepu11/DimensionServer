@@ -1,7 +1,7 @@
 {
   "name": "DimensionServer",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "./src/server.js",
   "type": "module",
   "author": "deepanshu tiwari",
   "license": "MIT",
