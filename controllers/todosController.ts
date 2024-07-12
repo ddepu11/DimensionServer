@@ -299,12 +299,12 @@ async function createTodo(
 
 const updateTodo = async (
   t: Transaction,
-  { id, content }: TodoWithID,
+  { id, content, completed }: TodoWithID,
   version: number
 ) => {
   await t.none(
-    `update todo SET content = coalesce($1, content), version =  coalesce($2, version) WHERE id = $3`,
-    [content, version, id]
+    `update todo SET content = coalesce($1, content), version = coalesce($2, version), completed = coalesce($3, completed) WHERE id = $4`,
+    [content, version, completed, id]
   );
 };
 
