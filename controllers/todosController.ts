@@ -57,26 +57,44 @@ async function pull(req: Request, res: Response) {
         ord: number;
         version: number;
         completed: boolean;
+        deleted: boolean;
       }>(
-        "select id, content, ord, version, completed from todo where version > $1",
+        "select id, content, ord, version, completed, deleted from todo where version > $1",
         fromVersion
       );
 
       // Build and return response.
       const patch: PatchOperation[] = [];
       for (const row of changed) {
-        const { id, content, ord, completed } = row;
+        const {
+          id,
+          content,
+          ord,
+          completed,
+          deleted,
+          version: rowVersion,
+        } = row;
 
-        patch.push({
-          op: "put",
-          key: `todo/${id}`,
-          value: {
-            content,
-            order: ord,
-            completed,
-            id,
-          },
-        });
+        if (deleted) {
+          if (rowVersion > fromVersion) {
+            patch.push({
+              op: "del",
+              key: `todo/${id}`,
+            });
+          }
+        } else {
+          patch.push({
+            op: "put",
+            key: `todo/${id}`,
+            value: {
+              content,
+              order: ord,
+              completed,
+              id,
+              deleted,
+            },
+          });
+        }
       }
 
       const body: PullResponse = {
@@ -215,6 +233,10 @@ async function processMutation(
       case "updateTodo":
         await updateTodo(t, mutation.args as TodoWithID, nextVersion);
         break;
+
+      case "deleteTodo":
+        await deleteTodo(t, mutation.args as string, nextVersion);
+        break;
       default:
         throw new Error(`Unknown mutation: ${mutation.name}`);
     }
@@ -291,8 +313,8 @@ async function createTodo(
 ) {
   await t.none(
     `insert into todo (
-      id, content, ord, completed, version) values
-      ($1, $2, $3, false, $4)`,
+      id, content, ord, completed, version, deleted) values
+      ($1, $2, $3, false, $4, false)`,
     [id, content, order, version]
   );
 }
@@ -305,6 +327,14 @@ const updateTodo = async (
   await t.none(
     `update todo SET content = coalesce($1, content), version = coalesce($2, version), completed = coalesce($3, completed) WHERE id = $4`,
     [content, version, completed, id]
+  );
+};
+
+const deleteTodo = async (t: Transaction, id: string, version: number) => {
+  const deleted = true;
+  await t.none(
+    `update todo SET deleted = coalesce($1, deleted), version = coalesce($2, version) WHERE id = $3`,
+    [deleted, version, id]
   );
 };
 

@@ -23,6 +23,7 @@ async function initDB() {
           content text not null,
           ord integer not null,
           completed boolean not null,
+          deleted boolean not null,
           version integer not null)`);
 
     // Stores last mutationID processed for each Replicache client.
