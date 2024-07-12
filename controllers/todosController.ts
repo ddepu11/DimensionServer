@@ -74,6 +74,7 @@ async function pull(req: Request, res: Response) {
             content,
             order: ord,
             completed,
+            id,
           },
         });
       }
@@ -210,6 +211,10 @@ async function processMutation(
       case "createTodo":
         await createTodo(t, mutation.args as TodoWithID, nextVersion);
         break;
+
+      case "updateTodo":
+        await updateTodo(t, mutation.args as TodoWithID, nextVersion);
+        break;
       default:
         throw new Error(`Unknown mutation: ${mutation.name}`);
     }
@@ -291,6 +296,17 @@ async function createTodo(
     [id, content, order, version]
   );
 }
+
+const updateTodo = async (
+  t: Transaction,
+  { id, content }: TodoWithID,
+  version: number
+) => {
+  await t.none(
+    `update todo SET content = coalesce($1, content), version =  coalesce($2, version) WHERE id = $3`,
+    [content, version, id]
+  );
+};
 
 async function sendPoke() {
   // TODO
