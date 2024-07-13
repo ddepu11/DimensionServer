@@ -1,5 +1,7 @@
+import "dotenv/config";
 import express, { Request, Response } from "express";
 import todos from "../routes/todos";
+
 const port = process.env.PORT || 9000;
 
 const app = express();
