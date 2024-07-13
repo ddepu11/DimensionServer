@@ -7,6 +7,7 @@ import type {
 } from "replicache";
 import type { Request, Response, NextFunction } from "express";
 import type { TodoWithID } from "../types";
+import { sendPoke } from "../src/poke";
 
 // Pull todos
 export async function pullTodos(
@@ -337,7 +338,3 @@ const deleteTodo = async (t: Transaction, id: string, version: number) => {
     [deleted, version, id]
   );
 };
-
-async function sendPoke() {
-  // TODO
-}
